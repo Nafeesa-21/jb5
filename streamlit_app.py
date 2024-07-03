@@ -9,8 +9,6 @@ analysing news articles
 
 st.prediction with ml model
 
-st.text_input('enter a text here,a.z')
-
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
 
@@ -39,4 +37,5 @@ st.altair_chart(alt.Chart(df, height=700, width=700)
         color=alt.Color("idx", legend=None, scale=alt.Scale()),
         size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
     ))
+st.text_input('enter a text here,a.z')
 
