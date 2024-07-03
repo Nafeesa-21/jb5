@@ -23,6 +23,19 @@ if st.button("Classify"):
     st.write("Prediction with ML Models")
     st.write(f"Entered Text: {text}")
 
+# Comparing Recall for the sports and education to support the final decision on
+# best performing model
+df = pd.DataFrame({
+    'Models': ['Logistic regression', 'Support vector'],
+    'sports': [0.81, 0.96],
+    'education': [0.97, 0.94]
+})
+
+# plotting graph
+df.plot(x="Models", y=["sports", "education"], kind="bar")
+plt.xlabel('Models')
+plt.ylabel('Recall')
+plt.xticks(rotation=20)
 # Add a deploy button (for demonstration purposes)
 st.button("Deploy")
 
