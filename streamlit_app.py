@@ -6,12 +6,25 @@ import streamlit as st
 #-----------sidebar
 page = st.sidebar.selectbox('page navigator', ["predictor", "model analyis"])
 
-if page == "predictor":
-  #-----------inputs
-  st.markdown("Analysing news articles")
-  upload_columns = st.columns([2,1])
-  # file upload
-file_upload = upload_columns[0].expander(label="prediction with ml flows")
+# Set the title of the app
+st.title("News Classifier")
+
+# Add a description
+st.write("Analyzing news articles")
+
+# Text input for news articles
+text = st.text_area("Enter Text", "")
+
+# Button to classify the news article
+if st.button("Classify"):
+    # This is where the ML model prediction would happen
+    # For now, we'll just display the entered text
+    # You would replace this with your model's prediction logic
+    st.write("Prediction with ML Models")
+    st.write(f"Entered Text: {text}")
+
+# Add a deploy button (for demonstration purposes)
+st.button("Deploy")
 
 
   
