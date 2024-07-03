@@ -8,8 +8,11 @@ page = st.sidebar.selectbox('page navigator', ["predictor", "model analyis"])
 
 if page == "predictor":
   #-----------inputs
-  st.markdown("analysing news articles")
+  st.markdown("Analysing news articles")
   upload_columns = st.columns([2,1])
-  
+  # file upload
+file_upload = upload_columns[0].expander(label="prediction with ml flows")
+
+
   
   
