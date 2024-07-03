@@ -7,7 +7,8 @@ import streamlit as st
 # news prediction model
 analysing news articles
 
-st.prediction with ('ml models')
+st.prediction with ml model
+at.input('enter a text here')
 
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
