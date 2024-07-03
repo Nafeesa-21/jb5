@@ -8,7 +8,8 @@ import streamlit as st
 analysing news articles
 
 st.prediction with ml model
-at.input('enter a text here')
+
+st.text_input('enter a text here')
 
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
