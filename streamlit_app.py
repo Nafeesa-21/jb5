@@ -9,7 +9,7 @@ analysing news articles
 
 st.prediction with ml model
 
-st.text_input('enter a text here')
+st.text_input('enter a text here,a.z')
 
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
