@@ -6,4 +6,7 @@ import streamlit as st
 #-----------sidebar
 page = st.sidebar.selectbox('page navigator', ["predictor", "model analyis"])
 
-st.sidebar.image("assets/logo.pgn", width=120)
+if page == "predictor":
+  #-----------inputs
+  st.msrkdown("analysing news articles")
+  
