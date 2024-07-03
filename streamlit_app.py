@@ -4,7 +4,10 @@ import pandas as pd
 import streamlit as st
 
 #----------sidebar
-page = st.sidebar.selectbox('page navigator',["predictor","model analysis"])
+import streamlit as st
+
+page = st.sidebar.selectbox('page navigator', ["predictor", "model analysis"])
+
 
 """
 # news prediction model
