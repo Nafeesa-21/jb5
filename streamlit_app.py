@@ -8,5 +8,5 @@ page = st.sidebar.selectbox('page navigator', ["predictor", "model analyis"])
 
 if page == "predictor":
   #-----------inputs
-  st.msrkdown("analysing news articles")
+  st.markdown("analysing news articles")
   
