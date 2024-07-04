@@ -75,5 +75,3 @@ if uploaded_files:
                 )
     else:
         st.error("Please upload all three models: model_lr.pkl, model_nb.pkl, and svc_model.pkl")
-
-$ streamlit run streamlit_app.py
