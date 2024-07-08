@@ -1,77 +1,95 @@
+# Streamlit dependencies
 import streamlit as st
-import pickle
+import joblib
+import os
+
+# Data dependencies
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 
-# Streamlit app
-st.title('Upload and Use Specific Pickle Models (Logistic Regression, Naive Bayes, SVC)')
+# Print current working directory for debugging
+#st.write("Current working directory:", os.getcwd())
 
-# Upload the pickle files
-uploaded_files = st.file_uploader("Upload model_lr.pkl, model_nb.pkl, and svc_model.pkl files", type="pkl", accept_multiple_files=True)
-
-# Dictionary to store the models
-models = {}
-
-# Load the models
-if uploaded_files:
-    for file in uploaded_files:
-        model_name = file.name
-        if model_name in ["model_lr.pkl", "model_nb.pkl", "svc_model.pkl"]:
-            models[model_name] = pickle.load(file)
-    
-    # Ensure all required models are uploaded
-    if all(name in models for name in ["model_lr.pkl", "model_nb.pkl", "svc_model.pkl"]):
-        st.success("All models loaded successfully!")
-        
-        # Select the model to use
-        model_choices = {
-            "Logistic Regression": "model_lr.pkl",
-            "Naive Bayes": "model_nb.pkl",
-            "Support Vector Classifier": "svc_model.pkl"
-        }
-        selected_model_display_name = st.selectbox('Select a model', list(model_choices.keys()))
-        selected_model_name = model_choices[selected_model_display_name]
-        
-        if selected_model_name:
-            selected_model = models[selected_model_name]
-            
-            # Display the model details
-            st.write(f"Model '{selected_model_display_name}' loaded successfully!")
-            st.write(selected_model)
-            
-            # Upload the test CSV file
-            uploaded_csv_file = st.file_uploader("Upload the test CSV file", type="csv")
-            
-            if uploaded_csv_file:
-                test_df = pd.read_csv(uploaded_csv_file)
-                st.write("Test CSV loaded successfully!")
-                
-                # Display the first few rows of the test data
-                st.write("First few rows of the test data:")
-                st.write(test_df.head())
-                
-                # Assuming the test CSV does not include the target column
-                # Preprocess the test data
-                scaler = StandardScaler()
-                test_data_scaled = scaler.fit_transform(test_df)
-                
-                # Predict using the selected model
-                predictions = selected_model.predict(test_data_scaled)
-                
-                # Save predictions in a new DataFrame
-                predictions_df = pd.DataFrame(predictions, columns=['Predictions'])
-                
-                # Display the predictions
-                st.write("Predictions:")
-                st.write(predictions_df)
-                
-                # Provide an option to download the predictions
-                csv = predictions_df.to_csv(index=False)
-                st.download_button(
-                    label="Download Predictions as CSV",
-                    data=csv,
-                    file_name='predictions.csv',
-                    mime='text/csv'
-                )
+# Function to load the vectorizer
+def load_vectorizer(vectorizer_path):
+    if os.path.exists(vectorizer_path):
+        return joblib.load(vectorizer_path)
     else:
-        st.error("Please upload all three models: model_lr.pkl, model_nb.pkl, and svc_model.pkl")
+        st.error(f"Vectorizer file not found at {vectorizer_path}")
+        return None
+
+# Define absolute paths
+base_path = os.path.dirname(__file__)
+vectorizer_path = os.path.join(base_path, "tfidf_vectorizer.pkl")
+
+# Load the vectorizer
+vectorizer = load_vectorizer(vectorizer_path)
+
+# List of available models
+model_paths = {
+    "Logistic Regression": os.path.join(base_path, "logistic_regression_model.pkl"),
+    "Naive Bayes": os.path.join(base_path, "naive_bayes_model.pkl"),
+    "Support Vector Machine": os.path.join(base_path, "support_vector_machine_model.pkl")
+}
+
+# Category mapping (Example: Replace with your actual categories)
+category_mapping = {
+    0: "Business",
+    1: "Education",
+    2: "Entertainment",
+    3: "Sports",
+    4: "Technology"
+}
+
+# Main function to build the Streamlit app
+def main():
+    """News Classifier App with Streamlit"""
+    
+    # Creates a main title and subheader on your page
+    st.title("News Classifier")
+    st.subheader("Analysing news articles")
+    
+    # Creating sidebar with selection box
+    options = ["Prediction", "Information"]
+    selection = st.sidebar.selectbox("Choose Option", options)
+    
+    # Building out the "Information" page
+    if selection == "Information":
+        st.info("General Information")
+        st.markdown("Some information here")
+    
+    # Building out the prediction page
+    if selection == "Prediction":
+        st.info("Prediction with ML Models")
+        
+        # Model selection
+        model_choice = st.selectbox("Choose Model", list(model_paths.keys()))
+        
+        # Creating a text box for user input
+        news_text = st.text_area("Enter Text", "Type Here")
+        
+        if st.button("Classify"):
+            if vectorizer is not None:
+                # Transforming user input with vectorizer
+                vect_text = vectorizer.transform([news_text]).toarray()
+                
+                # Load the selected model
+                model_path = model_paths[model_choice]
+                if os.path.exists(model_path):
+                    predictor = joblib.load(open(model_path, "rb"))
+                    
+                    # Make prediction
+                    prediction = predictor.predict(vect_text)
+                    
+                    # Get the category name
+                    category_name = category_mapping.get(prediction[0], "Unknown category")
+                    
+                    # When model has successfully run, will print prediction
+                    st.success(f"Text Categorized as: {category_name}")
+                else:
+                    st.error(f"Model file not found at {model_path}")
+            else:
+                st.error("Vectorizer could not be loaded. Classification cannot proceed.")
+
+# Required to let Streamlit instantiate our web app
+if __name__ == '__main__':
+    main()
